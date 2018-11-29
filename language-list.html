@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Language List Retrieval</title>
+</head>
+
+<body>
+    <h2>A few programming languages</h2>
+    <ul id="languageList">
+    </ul>
+</body>
+
+
+<script>
+    function createList(text) {
+        const textList = text.split(";");
+        for (lang of textList) {
+            let langElement = document.createElement("li");
+            langElement.textContent = lang;
+            langElement.id = lang;
+            document.getElementById("languageList").appendChild(langElement);
+        };
+    };
+
+    fetch(
+        "https://raw.githubusercontent.com/bpesquet/thejsway/master/resources/languages.txt"
+        )
+        .then(response => response.text()) 
+        .then(text => {
+              createList(text);
+    });
+
+</script>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Animation Practice</title>
+    <style>
+        #ball {
+            position: relative;
+            left: 0px;
+        }
+    </style>
+</head>
+
+<body>
+    <p>
+        <button id="start">Start</button>
+        <button id="stop" disabled>Stop</button>
+    </p>
+    <div id="frame">
+        <!-- Update the "src" attribute if you downloaded the image locally -->
+        <img id="ball" src="https://upload.wikimedia.org/wikipedia/commons/7/72/Basketball_Clipart.svg">
+    </div>
+
+</body>
+
+
+<script>
+    const moveBlockRight = () => {
+        const xBlock = parseFloat(getComputedStyle(blockElement).left);
+        const xMax = (parseFloat(getComputedStyle(frame).width) - parseFloat(getComputedStyle(ball).width));
+        if (xBlock + blockWidth <= xMax) {
+            blockElement.style.left = (xBlock + movement) + "px";
+            animationId = requestAnimationFrame(moveBlockRight);
+        }
+        else {
+            animationId = requestAnimationFrame(moveBlockLeft);
+        }
+    };
+
+    const moveBlockLeft = () => {
+        const xBlock = parseFloat(getComputedStyle(blockElement).left);
+        const xMax = parseFloat(getComputedStyle(frame).width);
+        if (xBlock + blockWidth > 0) {
+            blockElement.style.left = (xBlock - movement) + "px";
+            animationId = requestAnimationFrame(moveBlockLeft);
+        }
+        else {
+            animationId = requestAnimationFrame(moveBlockRight);
+        }
+    };
+
+    const blockElement = document.getElementById("ball");
+    const blockWidth = parseFloat(getComputedStyle(ball).width);
+
+    const movement = 12;
+
+    document.getElementById("start").addEventListener("click", e =>{
+        animationId = requestAnimationFrame(moveBlockRight);
+        document.getElementById("start").disabled = true;
+        document.getElementById("stop").disabled = false;
+    });
+
+    document.getElementById("stop").addEventListener("click", e =>{
+        cancelAnimationFrame(animationId);
+        document.getElementById("start").disabled = false;
+        document.getElementById("stop").disabled = true;
+    }); 
+</script>

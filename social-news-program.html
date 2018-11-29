@@ -1,0 +1,262 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <title>A social news web page</title>
+    <style type="text/css">
+        body {
+            background-color: #eee;
+        }
+        /* Main link element (<div> tag) */
+        .link {
+            background: white;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        /* Link title (<a> tag) */
+        .linkTitle {
+            color: #428bca;
+            text-decoration: none;
+            margin-right: 5px;
+        }
+        .linkTitle:hover {
+            text-decoration: none;
+        }
+        /* Link URL (<span> tag) */
+        .linkUrl {
+            font-weight: normal;
+            font-size: 80%;
+        }
+        /* Link headline containing title & URL (<h4> tag) */
+        .linkHeadline {
+            margin: 0;
+        }
+        /* Link author (<span> tag) */
+        .linkAuthor {
+            font-weight: normal;
+            font-size: 80%;
+        }
+        .linkForm {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Bootstrap navigation bar -->
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">A Place to Put Your Links<sup>&copy;</sup></a>
+                </div>
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <button type="button" id="submitButton" class="btn btn-default navbar-btn">Submit a link</button>
+                    <button type="button" id="removeButton" class="btn btn-default navbar-btn">Remove a link</button>
+                    <p class="navbar-text navbar-right">A social news web page built with JavaScript.</p>
+                </div>
+            </div>
+        </nav>
+        <div id="content">
+            <div id="list-content"></div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+    // Creates a link element given a title, url, and author
+    function addLink (title, url, author) {
+        // Fixes links without "http"
+        if (!(url.startsWith("http://")) && !(url.startsWith("https://"))) {
+            url = "http://" + url;
+        };
+        // Creates elements for the link
+        const linkElement = document.createElement("div");
+        linkElement.classList.add("link");
+
+        const linkTitle = document.createElement("a");
+        linkTitle.classList.add("linkTitle");
+        linkTitle.id = "linkTitle";
+        linkTitle.textContent = title;
+        linkTitle.href = url;
+        linkTitle.target = "_blank";
+        
+        const linkUrl = document.createElement("span");
+        linkUrl.classList.add("linkUrl");
+        linkUrl.textContent = url;
+        
+        const linkAuthor = document.createElement("span");
+        linkAuthor.classList.add("linkAuthor");
+        linkAuthor.textContent = "Submitted by " + author;
+        
+        const linkHeadline = document.createElement("h4");
+        linkHeadline.classList.add("linkHeadline");
+        linkHeadline.appendChild(linkTitle);
+        linkHeadline.appendChild(linkUrl);
+        
+        linkElement.appendChild(linkHeadline);
+        linkElement.appendChild(linkAuthor);
+
+        return linkElement;
+    };
+
+    // Declares list of links and fills with default links
+    var listLinks = [
+        addLink("Wikipedia", "www.wikipedia.com", "Jonathan"),
+        addLink("Google", "www.google.com", "Jonathan"),
+        addLink("Fair Lines America", "www.fairlines.org", "Adam")
+    ];
+
+    // Replaces "list-content" element with a new one containing all links
+    function showList () {
+        const listContent = document.createElement("div");
+        listContent.id = "list-content";
+        for (link of listLinks) {
+            listContent.insertAdjacentElement("beforeEnd", link);
+        };
+        document.getElementById("content").replaceChild(listContent, document.getElementById("list-content"));
+    };
+
+    // Adds event for pressing "Submit a link"
+    document.getElementById("submitButton").addEventListener("click", e => {
+        const formElement = document.createElement("p");
+
+        const titleElement = document.createElement("input");
+        titleElement.placeholder = "Enter title of link";
+        titleElement.style.width = "20%";
+        titleElement.style.margin = "2px";
+        
+        const urlElement = document.createElement("input");
+        urlElement.placeholder = "Enter url of link";
+        urlElement.style.width = "30%";
+        urlElement.style.margin = "2px";
+        
+        const authorElement = document.createElement("input");
+        authorElement.placeholder = "Enter your name";
+        authorElement.style.width = "20%";
+        authorElement.style.margin = "2px";
+        
+        const addButton = document.createElement("button");
+        addButton.id = "addLink";
+        addButton.textContent = "Add Link";
+        addButton.style.margin = "2px";
+
+        const cancelButton = document.createElement("button");
+        cancelButton.id = "cancel";
+        cancelButton.textContent = "Cancel";
+        cancelButton.style.margin = "2px";
+        
+        const formHelp = document.createElement("p");
+        formHelp.id = "formHelp";
+
+        formElement.appendChild(authorElement);
+        formElement.appendChild(titleElement);
+        formElement.appendChild(urlElement);
+        formElement.appendChild(addButton);
+        formElement.appendChild(cancelButton);
+        
+        document.getElementById("content").insertAdjacentElement("afterbegin", formHelp);
+        document.getElementById("content").insertAdjacentElement("afterbegin", formElement);
+
+        // Disables the buttons at the top of the page
+        document.getElementById("submitButton").disabled = true;
+        document.getElementById("removeButton").disabled = true;
+
+        // Brings cursor to the first form
+        authorElement.focus();
+
+        // Adds event for pressing "Add Link"
+        addButton.addEventListener("click", e => {
+            let author = authorElement.value;
+            let title = titleElement.value;
+            let url = urlElement.value;
+            // A value for author must be entered
+            if (author.length < 1) {
+                formHelp.style.color = "red";
+                formHelp.textContent = "Please enter your name above."
+                authorElement.focus();
+            }
+            // A value for title must be entered
+            else if (title.length < 1) {
+                formHelp.style.color = "red";
+                formHelp.textContent = "Please enter the name of the link above."
+                titleElement.focus();
+            }
+            // A value for url must be entered
+            else if (url.length < 1) {
+                formHelp.style.color = "red";
+                formHelp.textContent = "Please enter the url of the link above."
+                urlElement.focus();
+            }
+            else {
+                // Creates a new link element based on user-entered info 
+                let link = addLink(title, url, author);
+                // Adds newly create link element to the list of links
+                listLinks.push(link);
+                // Displays a message indicating the link creation was successful
+                const successElement = document.createElement("p");
+                successElement.textContent = "The link " + title + " has been successfully created!"
+                successElement.style.backgroundColor = "palegreen";
+                successElement.style.color = "seagreen";
+                successElement.style.padding = "10px";
+                document.getElementById("content").replaceChild(successElement, formElement);
+                document.getElementById("content").removeChild(formHelp);
+                document.getElementById("submitButton").disabled = false;
+                document.getElementById("removeButton").disabled = false;
+                // Removes success message after 2 seconds
+                let counter = 2;
+                interval = setInterval(d => {
+                    if (counter > 0) {
+                        counter = counter - 1;
+                    }
+                    else {
+                        document.getElementById("content").removeChild(successElement);
+                        clearInterval(interval);
+                    };
+                }, 1000);
+
+                showList();
+            };
+        });
+
+        // Pressing "cancel" removes form and re-enables the top buttons
+        cancelButton.addEventListener("click", e => {
+            document.getElementById("content").removeChild(formElement);
+            document.getElementById("content").removeChild(formHelp);
+            document.getElementById("submitButton").disabled = false;
+            document.getElementById("removeButton").disabled = false;
+        });
+    });
+
+    // Adds event for pressing "Remove a link"
+    document.getElementById("removeButton").addEventListener("click", e => {
+        if (listLinks.length <= 3) {
+            alert("The page must have at least three links. Please add " +
+                  (4 - listLinks.length) +
+                  " more before attempting to remove any.")
+        }
+        else {
+            let message = "Select the number of the link you would like to remove.\n"
+            for (let i=0; i < listLinks.length; i++) {
+                message += "\n" + (i+1) + ". " + listLinks[i].textContent.split("http")[0];
+            };
+            // Removes a link from the list based on user input
+            let number = Number(prompt(message));
+            listLinks.splice[(number - 1), 1];
+
+            showList();
+        };
+    });
+
+    showList();
+</script>

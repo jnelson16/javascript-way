@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Famous Paintings Retrieval</title>
+</head>
+
+<body>
+    <h2>Some famous paintings</h2>
+    <table id="paintings">
+        <tr>
+            <th>Name</th>
+            <th>Year</th>
+            <th>Artist</th>
+        </tr>
+    </table>
+</body>
+
+
+<script>
+    var url = "https://raw.githubusercontent.com/bpesquet/thejsway/master/resources/paintings.json"; 
+
+    function parseJson(json) {
+        let paintList = JSON.parse(json);
+        for (painting of paintList) {
+            let paintElement = document.createElement("tr");
+
+            let nameElement = document.createElement("td");
+            nameElement.textContent = painting.name;
+            nameElement.align = "center";
+
+            let yearElement = document.createElement("td");
+            yearElement.textContent = painting.year;
+            yearElement.align = "center";
+            
+            let artistElement = document.createElement("td");
+            artistElement.textContent = painting.artist;
+            artistElement.align = "center";
+
+            paintElement.appendChild(nameElement);
+            paintElement.appendChild(yearElement);
+            paintElement.appendChild(artistElement);
+            document.getElementById("paintings").appendChild(paintElement);
+        };
+    };
+
+    fetch(
+        url
+        )
+        .then(response => response.text()) 
+        .then(json => {
+              parseJson(json);
+    });
+
+</script>

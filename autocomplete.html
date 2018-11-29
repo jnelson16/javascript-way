@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Autocomplete Practice</title>
+    <style>
+        .suggestion {
+            padding-left: 2px;
+            padding-right: 2px;
+        }
+
+        .suggestion:hover {
+            background-color: #adf;
+            cursor: pointer;
+        }
+
+        #suggestions {
+            position: absolute;
+            border: 1px solid black;
+            left: 155px;
+        }
+    </style>
+</head>
+
+<body>
+    <label for="country">Enter a country name</label>:
+    <input type="text" id="country">
+    <div id="suggestions"></div>
+</body>
+
+
+<script>
+   const countryList = [
+        "Afghanistan",
+        "Albania",
+        "Algeria",
+        "Andorra",
+        "Angola",
+        "Anguilla",
+        "Antarctica",
+        "Antigua-and-Barbuda",
+        "Argentina",
+        "Armenia",
+        "Aruba",
+        "Australia",
+        "Austria",
+        "Azerbaïjan"
+    ];
+
+    document.getElementById("country").addEventListener("input", e => {
+        try {
+          document.getElementById("suggestions").removeChild(document.getElementById("suggestions-box"));  
+        }
+        catch (err) {
+        };
+        let suggestionsElement = document.createElement("p");
+        suggestionsElement.id = "suggestions-box";
+        for (country of countryList) {
+            let countryElement = document.createElement("p");
+            countryElement.textContent = country;
+            if (country.toLowerCase().startsWith(e.target.value, 0)) {
+                suggestionsElement.appendChild(countryElement)
+            };
+            countryElement.addEventListener("click", e => {
+                document.getElementById("country").value = countryElement.textContent;
+                document.getElementById("suggestions").removeChild(document.getElementById("suggestions-box"));
+            });
+        document.getElementById("suggestions").appendChild(suggestionsElement);
+        };
+    });
+
+</script>
