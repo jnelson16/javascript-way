@@ -1,1 +1,1 @@
-"# javascript-way" 
+# javascript-way
